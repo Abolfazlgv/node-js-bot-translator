@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Abolfazlgv/node-js-bot-translator/issues"
   },
-  "homepage": "https://github.com/Abolfazlgv/node-js-bot-translator#readme"
+  "homepage": "https://github.com/Abolfazlgv/node-js-bot-translator#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0"
+  }
 }
