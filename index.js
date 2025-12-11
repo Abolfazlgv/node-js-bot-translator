@@ -1,3 +1,4 @@
+require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 
 //packages
@@ -12,6 +13,7 @@ const bot = new TelegramBot(token, { polling: true });
 //utils
 const components = require("./components");
 const actions = require("./actions");
+const messages = require("./utils/messages");
 
 //start command
 bot.onText(/\/start/, (msg, match) => {
@@ -19,41 +21,34 @@ bot.onText(/\/start/, (msg, match) => {
 });
 
 bot.on("callback_query", (query) => {
+  const myActions = ["google", "microsoft", "frazin"];
+  const myLangs = ["fa", "en", "fa_en", "en_fa"];
   const command = query.data;
   const chatID = query.message.chat.id;
+  const messageID = query.message.message_id;
 
-  if (command === "google") {
-    client.set(`user:${chatID}:action`, command);
-    const inlineKeyboard = components.googleDistinationLanguage;
-    bot.sendMessage(
+  if (myActions.includes(command))
+    actions.sendTranslateKeyboard(
+      bot,
       chatID,
-      "زبان مورد نظر خود را انتخاب کنید :)",
-      inlineKeyboard
+      "action",
+      command,
+      components[`${command}DistinationLanguage`],
+      messages.select_language,
+      messageID
     );
-  }
-  if (command === "microsoft") {
-    client.set(`user:${chatID}:action`, command);
-    const inlineKeyboard = components.googleDistinationLanguage;
-    bot.sendMessage(
-      chatID,
-      "زبان مورد نظر خود را انتخاب کنید :)",
-      inlineKeyboard
-    );
-  }
-  if (command === "frazin") {
-    client.set(`user:${chatID}:action`, command);
-    const inlineKeyboard = components.googleDistinationLanguage;
-    bot.sendMessage( chatID, "زبان مورد نظر خود را انتخاب کنید :)", inlineKeyboard)
-  }
 
-  if (command === "fa") {
-    client.set(`user:${chatID}:lang`, command);
-
-    bot.sendMessage(chatID, "fa");
+  if (myLangs.includes(command)) {
+    actions.sendLanguage(bot, chatID, command, messages.send_query);
   }
-  if (command === "en") {
-    client.set(`user:${chatID}:lang`, command);
+});
 
-    bot.sendMessage(chatID, "en");
-  }
+bot.on("polling_error", (error) => {
+  console.log("polling_error : ", error);
+});
+bot.on("webhook_error", (error) => {
+  console.log("webhook_error : ", error);
+});
+bot.on("error", (error) => {
+  console.log("error : ", error);
 });

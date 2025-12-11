@@ -1,3 +1,7 @@
+const redis = require("redis");
+const client = redis.createClient();
+client.connect();
+
 const homeMenu = (bot, chatID) => {
   const inlineKeyboard = {
     reply_markup: {
@@ -13,4 +17,19 @@ const homeMenu = (bot, chatID) => {
   bot.sendMessage(chatID, "به ربات مترجم خوش امدید :) \n موتور ترجمه خود را انتخاب کنید.", inlineKeyboard);
 };
 
-module.exports = { homeMenu };
+const sendTranslateKeyboard = (bot,chatID, field, command, keyboard, textMessage, messageID)=>{
+
+    client.set(`user:${chatID}:${field}`, command);
+    const inlineKeyboard = keyboard
+    bot.editMessageText(textMessage, {
+      chat_id: chatID,
+      message_id: messageID,
+      reply_markup: inlineKeyboard.reply_markup,
+    });
+}
+
+const sendLanguage = (bot, chatID, lang, message)=>{
+    client.set(`user:${chatID}:lang`, lang);
+    bot.sendMessage(chatID, message);
+}
+module.exports = { homeMenu,sendTranslateKeyboard, sendLanguage };

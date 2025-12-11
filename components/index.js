@@ -15,11 +15,35 @@ const googleDistinationLanguage = {
     inline_keyboard: [
       [
         { text: "انگلیسی", callback_data: "en" },
-        { text: "فارسی", callback_data: "fa" }
-      ]
+        { text: "فارسی", callback_data: "fa" },
+      ],
+    ],
+  },
+};
+const microsoftDistinationLanguage = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: "انگلیسی", callback_data: "en" },
+        { text: "فارسی", callback_data: "fa" },
+      ],
+    ],
+  },
+};
+const frazinDistinationLanguage = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: "انگلیسی", callback_data: "fa_en" },
+        { text: "فارسی", callback_data: "en_fa" },
+      ],
     ],
   },
 };
 
-
-module.exports = { homeMenuInlineKeyboard,googleDistinationLanguage };
+module.exports = {
+  homeMenuInlineKeyboard,
+  googleDistinationLanguage,
+  microsoftDistinationLanguage,
+  frazinDistinationLanguage,
+};
