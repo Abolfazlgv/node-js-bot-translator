@@ -2,6 +2,8 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 
 //packages
+const axios = require("axios");
+const api_token = "947283:693b2f9840248";
 const redis = require("redis");
 const client = redis.createClient();
 client.connect();
@@ -40,6 +42,27 @@ bot.on("callback_query", (query) => {
 
   if (myLangs.includes(command)) {
     actions.sendLanguage(bot, chatID, command, messages.send_query);
+  }
+});
+
+bot.on("message", async (msg) => {
+  const chatID = msg.chat.id;
+  const text = msg.text;
+  bot.sendMessage(msg.chat.id, msg.text);
+  if (!text.startsWith("/")) {
+    const action = await client.get(`user:${chatID}:action`);
+    const lang = await client.get(`user:${chatID}:lang`);
+
+    if (action && lang) {
+      const response = await axios.get(
+        `https://api.one-api.ir/translate/?token=${api_token}&action=${action}$lang=${lang}&q=` +
+          encodeURIComponent(text)
+      );
+      
+      bot.sendMessage(chatID,response.data.result)
+    } else {
+      actions.homeMenu(bot, msg.chat.id);
+    }
   }
 });
 
